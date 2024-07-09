@@ -1,0 +1,8 @@
+1. job interface for clients to implement
+2. instantinate a new queue (with things like rate limiting and timeouts and retrys all configured)
+3. clients can pass jobs to queue
+4. worker pool that picks of the tasks
+5. set job priority levels and have workers pick the highest priority job
+6. job shutdown
+7. cli and go module component
+8. store job results in memory and provide and interface for the user to query and interact with them
