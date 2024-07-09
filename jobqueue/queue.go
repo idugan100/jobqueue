@@ -49,8 +49,12 @@ func (q *Queue) worker(jobs <-chan Job) {
 		select {
 		case <-c.Done():
 			fmt.Println("TIMEOUT")
-		case <-r:
-			fmt.Println("job compeleted")
+		case result := <-r:
+			if result.Successful {
+				fmt.Println("job compeleted successfully")
+			} else {
+				fmt.Printf("error completing job %s", result.ErrorMessage)
+			}
 		}
 		cancel()
 	}
