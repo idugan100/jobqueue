@@ -33,7 +33,7 @@ func main() {
 	qj := quickjob{}
 	q := jobqueue.NewQueue()
 
-	for range 4 {
+	for range 1 {
 		q.AddJob(m, jobqueue.MEDIUM)
 	}
 	for range 2 {
@@ -42,6 +42,6 @@ func main() {
 	fmt.Println("hi1")
 	fmt.Println("hi2")
 	fmt.Println("hi3")
-
+	time.Sleep(time.Second * 30)
 	q.Stop()
 }
