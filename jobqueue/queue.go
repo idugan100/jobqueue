@@ -24,7 +24,7 @@ type Queue struct {
 
 func NewQueue() *Queue {
 	q := &Queue{Workers: 3, Retries: 1, Timeout: 1 * time.Second, Size: 5}
-	q.jobs = make(chan Job) //add queue size at some point
+	q.jobs = make(chan Job, q.Size)
 
 	for range q.Workers {
 		q.wg.Add(1)
