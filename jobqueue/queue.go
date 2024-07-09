@@ -14,16 +14,16 @@ const MEDIUM = priority(2)
 const LOW = priority(1)
 
 type Queue struct {
-	Workers int
-	Retries int
-	Timeout time.Duration
-	Size    int
-	wg      sync.WaitGroup
-	jobs    chan JobWrapper
+	Workers  int
+	Attempts int
+	Timeout  time.Duration
+	Size     int
+	wg       sync.WaitGroup
+	jobs     chan JobWrapper
 }
 
 func NewQueue() *Queue {
-	q := &Queue{Workers: 3, Retries: 2, Timeout: 1 * time.Second, Size: 5}
+	q := &Queue{Workers: 3, Attempts: 2, Timeout: 1 * time.Second, Size: 5}
 	q.jobs = make(chan JobWrapper, q.Size)
 
 	for range q.Workers {
@@ -51,7 +51,7 @@ func (q *Queue) worker(jobs <-chan JobWrapper) {
 		case <-c.Done():
 			fmt.Println("TIMEOUT")
 
-			if job.tries < q.Retries {
+			if job.tries < q.Attempts {
 				fmt.Println("job retried")
 				q.jobs <- job
 			}
@@ -60,7 +60,7 @@ func (q *Queue) worker(jobs <-chan JobWrapper) {
 				fmt.Println("job compeleted successfully")
 			} else {
 				fmt.Printf("error completing job %s\n", result.ErrorMessage)
-				if job.tries < q.Retries {
+				if job.tries < q.Attempts {
 					fmt.Println("job retried")
 					q.jobs <- job
 				}
