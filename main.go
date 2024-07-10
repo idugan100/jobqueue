@@ -34,10 +34,10 @@ func main() {
 	q := jobqueue.NewQueue()
 
 	for range 1 {
-		q.AddJob(m, jobqueue.MEDIUM)
+		q.AddJob(m)
 	}
 	for range 2 {
-		q.AddJob(qj, jobqueue.HIGH)
+		q.AddJob(qj)
 	}
 	fmt.Println("hi1")
 	fmt.Println("hi2")

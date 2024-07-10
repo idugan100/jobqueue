@@ -2,7 +2,6 @@
 2. instantinate a new queue (with things like timeouts and retrys and queue size) - completed
 3. clients can pass jobs to queue - created
 4. worker pool that picks of the tasks - created
-5. set job priority levels and have workers pick the highest priority job - not started
 6. job shutdown - created
 7. cli and go module component - cli not started
 8. store job results in memory and provide and interface for the user to query, interact and moniter them - not started

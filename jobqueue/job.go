@@ -12,4 +12,5 @@ type JobResult struct {
 type JobWrapper struct {
 	Job
 	tries int
+	id    string
 }

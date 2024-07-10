@@ -5,13 +5,9 @@ import (
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
-
-type priority int
-
-const HIGH = priority(3)
-const MEDIUM = priority(2)
-const LOW = priority(1)
 
 type Queue struct {
 	Workers  int
@@ -33,14 +29,17 @@ func NewQueue() *Queue {
 	}
 	return q
 }
-func (q *Queue) AddJob(j Job, p priority) {
-	fmt.Println("job created")
-	q.jobs <- JobWrapper{Job: j, tries: 0}
+func (q *Queue) AddJob(j Job) {
+	jw := JobWrapper{Job: j, tries: 0, id: uuid.NewString()}
+	q.jobs <- jw
+	fmt.Printf("job %s created\n", jw.id)
+
 }
 
 func (q *Queue) worker(jobs <-chan JobWrapper) {
 	for job := range jobs {
-		fmt.Println("job accepted")
+		fmt.Printf("job %s accepted\n", job.id)
+
 		c, cancel := context.WithTimeout(context.Background(), q.Timeout)
 		r := make(chan JobResult)
 		go func() {
@@ -49,19 +48,22 @@ func (q *Queue) worker(jobs <-chan JobWrapper) {
 		}()
 		select {
 		case <-c.Done():
-			fmt.Println("TIMEOUT")
+			fmt.Printf("job %s timed out\n", job.id)
 
 			if job.tries < q.Attempts {
-				fmt.Println("job retried")
+				fmt.Printf("job %s retried\n", job.id)
 				q.jobs <- job
 			}
 		case result := <-r:
 			if result.Successful {
-				fmt.Println("job compeleted successfully")
+				fmt.Printf("job %s completed successfully\n", job.id)
+
 			} else {
-				fmt.Printf("error completing job %s\n", result.ErrorMessage)
+				fmt.Printf("job %s errored out: %s\n", job.id, result.ErrorMessage)
+
 				if job.tries < q.Attempts {
-					fmt.Println("job retried")
+					fmt.Printf("job %s retried\n", job.id)
+
 					q.jobs <- job
 				}
 			}
