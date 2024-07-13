@@ -42,6 +42,5 @@ func main() {
 	fmt.Println("hi1")
 	fmt.Println("hi2")
 	fmt.Println("hi3")
-	time.Sleep(time.Second * 30)
 	q.Stop()
 }
